@@ -28,8 +28,7 @@ class block_coursemanagerstatus_renderer extends plugin_renderer_base {
     // Form for updating a user status.
     public function update_form(moodle_url $formtarget) {
         global $USER;
-        $content = html_writer::start_tag('form', array('method'=>get_string('form_method', 'block_coursemanagerstatus'),
-                                          'action'=>$formtarget));
+        $content = html_writer::start_tag('form', array('method'=>'post', 'action'=>$formtarget));
         $content .= html_writer::empty_tag('input', array('type'=>'hidden', 'name'=>'userid', 'id'=>'userid', 'value'=>$USER->id));
         $content .= html_writer::start_tag('div');
         $content .= html_writer::tag('label', '<b>'.get_string('label_update_userstatus', 'block_coursemanagerstatus').':</b>',

@@ -33,7 +33,6 @@ $string['current_status'] = 'Your Status:';
 $string['comments'] = 'Comments:';
 $string['notset'] = 'Not yet set';
 $string['update'] = 'Update';
-$string['form_method'] = 'post';
 $string['label_update_userstatus'] = 'Update';
 $string['select_option_1'] = 'Available';
 $string['select_option_2'] = 'Away';
