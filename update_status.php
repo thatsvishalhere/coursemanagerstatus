@@ -53,7 +53,8 @@ if ($data = data_submitted()) {
             echo "$e";
         }
     }
+    redirect(get_referer(false));
 }
 
-// Redirect to my page.
-header("Location:".new moodle_url("$CFG->wwwroot/my/index.php"));
+// Redirect to main page if data is not being submitted.
+redirect(new moodle_url('/'));
