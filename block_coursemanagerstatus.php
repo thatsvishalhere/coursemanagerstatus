@@ -21,6 +21,8 @@
  * @copyright  2013 Vishal Raheja
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
+
 class block_coursemanagerstatus extends block_base {
     public function init() {
         $this->title = get_string('coursemanagerstatus', 'block_coursemanagerstatus');
