@@ -37,21 +37,13 @@ if ($data = data_submitted()) {
     $record->comments= $data->userstatuscomments;
     // If no records are present, insert a record.
     if (!$dbrecord) {
-        echo "No records found";
-        try {
-            // Insert a new record in the block table.
-            $DB->insert_record('block_coursemanagerstatus', $record);
-        } catch (dml_exception $e) {
-            echo "$e";
-        }
+        // Insert a new record in the block table.
+        $DB->insert_record('block_coursemanagerstatus', $record);
     } else {
         $record->id = $dbrecord->id;
-        try {
-            // Update the record in the block table.
-            $DB->update_record('block_coursemanagerstatus', $record);
-        } catch (dml_exception $e) {
-            echo "$e";
-        }
+		
+        // Update the record in the block table.
+        $DB->update_record('block_coursemanagerstatus', $record);       
     }
     redirect(get_referer(false));
 }
