@@ -21,4 +21,8 @@
  * @copyright  2013 Vishal Raheja
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-$plugin->version = 2011062800;
+$plugin->version = 2013050100;
+$plugin->requires = 2010112400;
+$plugin->component = 'block_coursemanagerstatus';
+$plugin->maturity = MATURITY_ALPHA;
+$plugin->release = '2.4 (Build: 2012120300)';
