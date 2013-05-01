@@ -38,7 +38,7 @@ class block_coursemanagerstatus extends block_base {
         if ($PAGE->pagetype=='my-index') {
             $courses=get_courses();
             foreach ($courses as $course) {
-                $context = get_context_instance (CONTEXT_COURSE, $course->id);
+                $context = context_course::instance($course->id);
                 // To allow the users who have editing rights on any of the courses to update their status.
                 if (has_capability('moodle/course:manageactivities', $context, $USER->id)) {
                     $updateflag = true;	
@@ -57,7 +57,7 @@ class block_coursemanagerstatus extends block_base {
                 }
             }
         } else {
-            $context = get_context_instance (CONTEXT_COURSE, $COURSE->id);
+            $context = context_course::instance($COURSE->id);
             $managing_users = get_users_by_capability($context, 'moodle/course:manageactivities');
             // For displaying the course manager status.
             foreach ($managing_users as $managing_user) {
