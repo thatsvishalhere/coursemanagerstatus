@@ -33,30 +33,30 @@ class block_coursemanagerstatus extends block_base {
             return $this->content;
         }
         $this->content =  new stdClass;
-		$updateflag = false;
-		$renderer = $this->page->get_renderer('block_coursemanagerstatus');
+        $updateflag = false;
+        $renderer = $this->page->get_renderer('block_coursemanagerstatus');
         // For showing the user status on the my page in moodle.
         if ($PAGE->pagetype=='my-index') {
-			$mystatus = $renderer->mystatus();
-			if($mystatus!=NULL)
-			{
-				$this->content->text.=$mystatus;
-				$updateflag=true;
-			}
+            $mystatus = $renderer->mystatus();
+            if($mystatus!=NULL)
+            {
+                $this->content->text.=$mystatus;
+                $updateflag=true;
+            }
         } else {
-			$context = context_course::instance($COURSE->id);
+            $context = context_course::instance($COURSE->id);
             $managing_users = get_users_by_capability($context, 'moodle/course:manageactivities');
             // For displaying the course manager status.
-			if(has_capability("moodle/course:manageactivities", $context))
-			{
-				$updateflag=true;
-			}
-			$this->content->text.=$renderer->managerstatus();
+            if(has_capability("moodle/course:manageactivities", $context))
+            {
+                $updateflag=true;
+            }
+            $this->content->text.=$renderer->managerstatus();
         }
-		if($updateflag===true)
-		{
-			$this->content->text.=$renderer->updateform(new moodle_url("/blocks/coursemanagerstatus/update_status.php"));
-		}
+        if($updateflag===true)
+        {
+            $this->content->text.=$renderer->updateform(new moodle_url("/blocks/coursemanagerstatus/update_status.php"));
+        }
         return $this->content;
     }
     public function specialization() {

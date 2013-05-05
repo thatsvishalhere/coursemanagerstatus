@@ -29,7 +29,6 @@ require_login();
 
 // If the data is submitted update the table.
 if ($data = data_submitted()) {
-
     // Get the records related to the user.
     $dbrecord = $DB->get_record('block_coursemanagerstatus', array('userid'=>"$USER->id"));
     // Create a new record for inserting/updating the table.
@@ -44,10 +43,10 @@ if ($data = data_submitted()) {
     } else {
         $record->id = $dbrecord->id;
         
-		// Update the record in the block table.
+        // Update the record in the block table.
         $DB->update_record('block_coursemanagerstatus', $record);
     }
-	redirect(get_referer(false));
+    redirect(get_referer(false));
 }
 
 // Redirect to main page if data is not being submitted.

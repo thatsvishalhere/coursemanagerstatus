@@ -23,7 +23,7 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2013050100;
+$plugin->version = 2013050500;
 $plugin->requires = 2011120500;
 $plugin->component = 'block_coursemanagerstatus';
 $plugin->maturity = MATURITY_ALPHA;

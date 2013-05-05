@@ -25,11 +25,11 @@ defined('MOODLE_INTERNAL') || die();
 require_once('../config.php');
 require_once('update_form.php');
 class block_coursemanagerstatus_renderer extends plugin_renderer_base {
-	// Get my status
-	public function mystatus() {
-		global $USER, $COURSE, $CFG, $PAGE, $DB;
-		$courses=get_courses();
-		$content = NULL;
+    // Get my status
+    public function mystatus() {
+        global $USER, $COURSE, $CFG, $PAGE, $DB;
+        $courses=get_courses();
+        $content = NULL;
         foreach ($courses as $course) {
             $context = context_course::instance($course->id);
             // To allow the users who have editing rights on any of the courses to update their status.
@@ -47,14 +47,13 @@ class block_coursemanagerstatus_renderer extends plugin_renderer_base {
                 break;
             }
         }
-		return $content;
-	}
-	
-	// Get the course manager status.
-	public function managerstatus() {
-		global $COURSE, $CFG, $DB;
-		$content=NULL;
-		$context = context_course::instance($COURSE->id);
+        return $content;
+    }
+    // Get the course manager status.
+    public function managerstatus() {
+        global $COURSE, $CFG, $DB;
+        $content=NULL;
+        $context = context_course::instance($COURSE->id);
         $managing_users = get_users_by_capability($context, 'moodle/course:manageactivities');
         // For displaying the course manager status.
         foreach ($managing_users as $managing_user) {
@@ -69,14 +68,12 @@ class block_coursemanagerstatus_renderer extends plugin_renderer_base {
                 $content.= get_string('notset', 'block_coursemanagerstatus');
             }
         }
-		return $content;
-	}
-	
+        return $content;
+    }
     // Form for updating a user status.
     public function updateform(moodle_url $formtarget) {
         global $USER, $CFG;
         $form = new update_form($formtarget);
-		return $form->returnhtml();
+        return $form->returnhtml();
     }
-
 }
