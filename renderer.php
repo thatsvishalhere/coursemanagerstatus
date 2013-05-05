@@ -22,38 +22,61 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
-
+require_once('../config.php');
+require_once('update_form.php');
 class block_coursemanagerstatus_renderer extends plugin_renderer_base {
-
+	// Get my status
+	public function mystatus() {
+		global $USER, $COURSE, $CFG, $PAGE, $DB;
+		$courses=get_courses();
+		$content = NULL;
+        foreach ($courses as $course) {
+            $context = context_course::instance($course->id);
+            // To allow the users who have editing rights on any of the courses to update their status.
+            if (has_capability('moodle/course:manageactivities', $context, $USER->id)) {
+                $dbrecord = $DB->get_record('block_coursemanagerstatus', array('userid'=>"$USER->id"));
+                $content.=html_writer::start_tag('b').get_string('current_status', 'block_coursemanagerstatus').html_writer::end_tag('b');
+                if ($dbrecord) {
+                    $content.= $dbrecord->status;
+                    if ($dbrecord->comments!=null)
+                        $content.= html_writer::empty_tag('br', array()).html_writer::start_tag('b').get_string('comments', 'block_coursemanagerstatus').html_writer::end_tag('b').
+                            $dbrecord->comments;
+                } else {
+                    $content.= get_string('notset', 'block_coursemanagerstatus');
+                }
+                break;
+            }
+        }
+		return $content;
+	}
+	
+	// Get the course manager status.
+	public function managerstatus() {
+		global $COURSE, $CFG, $DB;
+		$content=NULL;
+		$context = context_course::instance($COURSE->id);
+        $managing_users = get_users_by_capability($context, 'moodle/course:manageactivities');
+        // For displaying the course manager status.
+        foreach ($managing_users as $managing_user) {
+            $dbrecord = $DB->get_record('block_coursemanagerstatus', array('userid'=>"$managing_user->id"));
+            $content.=html_writer::start_tag('b').$managing_user->firstname.' '.$managing_user->lastname.html_writer::end_tag('b').':';
+            if ($dbrecord) {
+                $content.= $dbrecord->status;
+                if($dbrecord->comments!=null)
+                    $content.= html_writer::empty_tag('br', array()).html_writer::start_tag('b').get_string('comments', 'block_coursemanagerstatus').html_writer::end_tag('b').
+                        $dbrecord->comments;
+            } else {
+                $content.= get_string('notset', 'block_coursemanagerstatus');
+            }
+        }
+		return $content;
+	}
+	
     // Form for updating a user status.
-    public function update_form(moodle_url $formtarget) {
-        global $USER;
-        $content = html_writer::start_tag('form', array('method'=>'post', 'action'=>$formtarget));
-        $content .= html_writer::empty_tag('input', array('type'=>'hidden', 'name'=>'userid', 'id'=>'userid', 'value'=>$USER->id));
-        $content .= html_writer::start_tag('div');
-        $content .= html_writer::tag('label', '<b>'.get_string('label_update_userstatus', 'block_coursemanagerstatus').':</b>',
-                                     array('for'=>'userstatus'));
-        $content .= html_writer::start_tag('select', array('id'=>'userstatus', 'name'=>'userstatus'));
-        $content .= html_writer::tag('option', get_string('select_option_1', 'block_coursemanagerstatus'),
-                                     array('value'=>get_string('select_option_1', 'block_coursemanagerstatus')));
-        $content .= html_writer::tag('option', get_string('select_option_2', 'block_coursemanagerstatus'),
-                                     array('value'=>get_string('select_option_2', 'block_coursemanagerstatus')));
-        $content .= html_writer::end_tag('select');
-        $content .= html_writer::empty_tag('br', array());
-        $content .= html_writer::empty_tag('br', array());
-        $content .= html_writer::tag('label', '<b>'.get_string('comments', 'block_coursemanagerstatus').'</b>',
-                                     array('for'=>'userstatuscomments'));
-        $content .= html_writer::empty_tag('input', array('id'=>'userstatuscomments',
-                                                          'type'=>'text',
-                                                          'name'=>'userstatuscomments'));
-        $content .= html_writer::empty_tag('br', array());
-        $content .= html_writer::start_tag('center');
-        $content .= html_writer::empty_tag('input', array('type'=>'submit',
-                                                          'value'=>get_string('update', 'block_coursemanagerstatus')));
-        $content .= html_writer::end_tag('center');
-        $content .= html_writer::end_tag('div');
-        $content .= html_writer::end_tag('form');
-        return $content;
+    public function updateform(moodle_url $formtarget) {
+        global $USER, $CFG;
+        $form = new update_form($formtarget);
+		return $form->returnhtml();
     }
 
 }

@@ -21,6 +21,8 @@
  * @copyright  2013 Vishal Raheja
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+//defined('MOODLE_INTERNAL') || die();
+
 global $CFG, $USER, $DB;
 require_once('../../config.php');
 require_login();
@@ -41,11 +43,11 @@ if ($data = data_submitted()) {
         $DB->insert_record('block_coursemanagerstatus', $record);
     } else {
         $record->id = $dbrecord->id;
-		
-        // Update the record in the block table.
-        $DB->update_record('block_coursemanagerstatus', $record);       
+        
+		// Update the record in the block table.
+        $DB->update_record('block_coursemanagerstatus', $record);
     }
-    redirect(get_referer(false));
+	redirect(get_referer(false));
 }
 
 // Redirect to main page if data is not being submitted.

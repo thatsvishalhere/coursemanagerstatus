@@ -33,55 +33,29 @@ class block_coursemanagerstatus extends block_base {
             return $this->content;
         }
         $this->content =  new stdClass;
-        $updateflag = false;
+		$updateflag = false;
+		$renderer = $this->page->get_renderer('block_coursemanagerstatus');
         // For showing the user status on the my page in moodle.
         if ($PAGE->pagetype=='my-index') {
-            $courses=get_courses();
-            foreach ($courses as $course) {
-                $context = context_course::instance($course->id);
-                // To allow the users who have editing rights on any of the courses to update their status.
-                if (has_capability('moodle/course:manageactivities', $context, $USER->id)) {
-                    $updateflag = true;	
-                    $dbrecord = $DB->get_record('block_coursemanagerstatus', array('userid'=>"$USER->id"));
-                    $this->content->text.='<b>'.get_string('current_status', 'block_coursemanagerstatus').'</b> ';
-                    if ($dbrecord) {
-                        $this->content->text.= $dbrecord->status.'<br />';
-                        if ($dbrecord->comments!=null)
-                            $this->content->text.= '<b>'.get_string('comments', 'block_coursemanagerstatus').'</b> '.
-                                                   $dbrecord->comments.'<br />';
-                    } else {
-                        $this->content->text.= get_string('notset', 'block_coursemanagerstatus').'<br />';
-                    }
-                    $this->content->text.= '<br />';
-                    break;
-                }
-            }
+			$mystatus = $renderer->mystatus();
+			if($mystatus!=NULL)
+			{
+				$this->content->text.=$mystatus;
+				$updateflag=true;
+			}
         } else {
-            $context = context_course::instance($COURSE->id);
+			$context = context_course::instance($COURSE->id);
             $managing_users = get_users_by_capability($context, 'moodle/course:manageactivities');
             // For displaying the course manager status.
-            foreach ($managing_users as $managing_user) {
-                if($managing_user->id == $USER->id)
-				{
-					$updateflag=true;
-				}
-                $dbrecord = $DB->get_record('block_coursemanagerstatus', array('userid'=>"$managing_user->id"));
-                $this->content->text=$this->content->text.'<b>'.$managing_user->firstname.' '.$managing_user->lastname.'</b>:';
-                if ($dbrecord) {
-                    $this->content->text.= $dbrecord->status.'<br />';
-                    if($dbrecord->comments!=null)
-                        $this->content->text.= '<b>'.get_string('comments', 'block_coursemanagerstatus').'</b> '.
-                                               $dbrecord->comments.'<br />';
-                } else {
-                    $this->content->text.= get_string('notset', 'block_coursemanagerstatus').'<br />';
-                }
-                $this->content->text.= '<br />';
-            }
+			if(has_capability("moodle/course:manageactivities", $context))
+			{
+				$updateflag=true;
+			}
+			$this->content->text.=$renderer->managerstatus();
         }
 		if($updateflag===true)
 		{
-            $renderer = $this->page->get_renderer('block_coursemanagerstatus');
-			$this->content->text.=$renderer->update_form(new moodle_url("/blocks/coursemanagerstatus/update_status.php"));
+			$this->content->text.=$renderer->updateform(new moodle_url("/blocks/coursemanagerstatus/update_status.php"));
 		}
         return $this->content;
     }
