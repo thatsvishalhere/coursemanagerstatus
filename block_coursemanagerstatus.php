@@ -33,18 +33,21 @@ class block_coursemanagerstatus extends block_base {
             return $this->content;
         }
         $this->content =  new stdClass;
+        $courseid_manager = NULL;
         $updateflag = false;
         $renderer = $this->page->get_renderer('block_coursemanagerstatus');
         // For showing the user status on the my page in moodle.
         if ($PAGE->pagetype=='my-index') {
             $mystatus = $renderer->mystatus();
-            if($mystatus!=NULL)
+            if($mystatus->text!=NULL)
             {
-                $this->content->text.=$mystatus;
+                $this->content->text.=$mystatus->text;
+                $courseid_manager = $mystatus->managercourseid;
                 $updateflag=true;
             }
         } else {
             $context = context_course::instance($COURSE->id);
+            $courseid_manager = $COURSE->id;
             $managing_users = get_users_by_capability($context, 'moodle/course:manageactivities');
             // For displaying the course manager status.
             if(has_capability("moodle/course:manageactivities", $context))
@@ -55,7 +58,7 @@ class block_coursemanagerstatus extends block_base {
         }
         if($updateflag===true)
         {
-            $this->content->text.=$renderer->updateform(new moodle_url("/blocks/coursemanagerstatus/update_status.php"));
+            $this->content->text.=$renderer->updateform(new moodle_url("/blocks/coursemanagerstatus/update_status.php"),$courseid_manager);
         }
         return $this->content;
     }

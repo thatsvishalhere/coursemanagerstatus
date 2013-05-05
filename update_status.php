@@ -29,6 +29,10 @@ require_login();
 
 // If the data is submitted update the table.
 if ($data = data_submitted()) {
+    //Only allow course managers to update status
+    $context = context_course::instance($data->courseid);
+    require_capability('moodle/course:manageactivities',$context);
+
     // Get the records related to the user.
     $dbrecord = $DB->get_record('block_coursemanagerstatus', array('userid'=>"$USER->id"));
     // Create a new record for inserting/updating the table.

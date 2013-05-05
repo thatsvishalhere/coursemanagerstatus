@@ -29,20 +29,23 @@ class block_coursemanagerstatus_renderer extends plugin_renderer_base {
     public function mystatus() {
         global $USER, $COURSE, $CFG, $PAGE, $DB;
         $courses=get_courses();
-        $content = NULL;
+        $content = new stdClass();
+        $content->text = NULL;
+        $content->managercourseid = NULL;
         foreach ($courses as $course) {
             $context = context_course::instance($course->id);
             // To allow the users who have editing rights on any of the courses to update their status.
             if (has_capability('moodle/course:manageactivities', $context, $USER->id)) {
+                $content->managercourseid = $course->id;
                 $dbrecord = $DB->get_record('block_coursemanagerstatus', array('userid'=>"$USER->id"));
-                $content.=html_writer::start_tag('b').get_string('current_status', 'block_coursemanagerstatus').html_writer::end_tag('b');
+                $content->text.=html_writer::start_tag('b').get_string('current_status', 'block_coursemanagerstatus').html_writer::end_tag('b');
                 if ($dbrecord) {
-                    $content.= $dbrecord->status;
+                    $content->text.= $dbrecord->status;
                     if ($dbrecord->comments!=null)
-                        $content.= html_writer::empty_tag('br', array()).html_writer::start_tag('b').get_string('comments', 'block_coursemanagerstatus').html_writer::end_tag('b').
+                        $content->text.= html_writer::empty_tag('br', array()).html_writer::start_tag('b').get_string('comments', 'block_coursemanagerstatus').html_writer::end_tag('b').
                             $dbrecord->comments;
                 } else {
-                    $content.= get_string('notset', 'block_coursemanagerstatus');
+                    $content->text.= get_string('notset', 'block_coursemanagerstatus');
                 }
                 break;
             }
@@ -71,9 +74,9 @@ class block_coursemanagerstatus_renderer extends plugin_renderer_base {
         return $content;
     }
     // Form for updating a user status.
-    public function updateform(moodle_url $formtarget) {
+    public function updateform(moodle_url $formtarget, $courseid_manager) {
         global $USER, $CFG;
-        $form = new update_form($formtarget);
+        $form = new update_form($formtarget, array('courseid'=>$courseid_manager));
         return $form->returnhtml();
     }
 }

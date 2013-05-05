@@ -7,6 +7,8 @@ class update_form extends moodleform {
         global $CFG, $USER;
         $mform =& $this->_form;
         $mform->addElement('html','<div style="margin-left: -20%;">');
+        $mform->addElement('hidden', 'courseid', $this->_customdata['courseid']);
+        $mform->setType('courseid', PARAM_ACTION);
         $mform->addElement('static', 'updatestring', '',html_writer::start_tag('b').'Update Status:'.html_writer::end_tag('b'));
         $select = $mform->addElement('select', 'userstatus', '', array('Available'=>'Available', 'Away'=>'Away'));
         $mform->addElement('text', 'userstatuscomments', '', array('size'=>'15'));
